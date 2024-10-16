@@ -1,0 +1,34 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Components.Authorization
+@inject IHttpContextAccessor HttpContextAccessor
+<PageTitle>Home</PageTitle>
+
+<h3>User’s information</h3>
+
+@if (HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+{
+    @if (claimsPrincipal != null && claimsPrincipal.Claims.Any())
+    {
+        <ul>
+            @foreach (var claim in claimsPrincipal.Claims)
+            {
+                <li><pre>@claim.Type: @claim.Value</pre></li>
+            }
+        </ul>
+    }
+}
+else
+{
+    <p>Login in to see User’s information</p>
+}
+
+
+@code {
+    private System.Security.Claims.ClaimsPrincipal claimsPrincipal;
+
+    protected override void OnInitialized()
+    {
+        var context = HttpContextAccessor.HttpContext;
+        claimsPrincipal = HttpContextAccessor.HttpContext.User;
+    }
+}
